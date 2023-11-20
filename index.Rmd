@@ -16,22 +16,28 @@ Milestone 1: Create public GitHub repository: I am interested in exploring data 
 
 
 
-Milestone 2: Finding data and writing a proposal: Does nutrition and physical activity affect whether or not someone becomes obese? I plan to examine the extent to which people need to have good nutrition and physical activity to not become obese. 
+Milestone 2: Finding data and writing a proposal: 
 
-I hypothesize that good nutrition has a large effect on if someone becomes obese, while physical activity only has a small effect on if someone becomes obese. If people were to have good nutrition with no physical activity, I expect there would be a lower percentage of those who are obese. If people were to do physical activity but have bad nutrition, then I believe the percentage of those who are obese would be higher. This hypothesis could be true as for example, those who have remote jobs and may not have time to do physical activity, if they eat well and have good nutrition, it would be unlikely that they get to a point of obesity. On the other hand, those who play sports and do physical activity, but have bad nutrition and eat unhealthy food, will be more likely to gain weight and become obese. 
+description: National Longitudinal Survey of Youth (1979 -- 2012) is a longitudinal project that follows a sample of American youth born between 1957-64 on various life aspects from 1979 to 2012. The data set provided below is a subset of this database, focusing on variables of 4 main topics: socioeconomic status, employment, education, and marriage. 
 
-The explanatory variable of interest is whether subjects engage in good or bad nutrition and if they engage in physical activity. This variable will be measured through graphs and percentages. The possible variations in this variable could be gender and age. 
+How does variables such as employment, education, marriage, and income affect family size? Does race play a factor into these variables? I plan to examine these variables in relation to family size and race to examine if there is any correlations or relationships to be seen. 
 
-The outcome variable is whether or not the subject is obese. For instance, I will be examining if the outcome of obesity is affected by the subject’s nutrition and physical activity. This variable is measured by the “Nutrition, Physical Activity, and Obesity - Behavioral Risk Factor Surveillance System” from the U.S. Department of Health & Human Services. 
+I hypothesize that every variable I mentioned above, will be a factor when it comes to having either an increase or decrease in family size. If someone was to have no employment, little to no education, unmarried, and have low income, I hypothesize that they will have a larger family size (<= 6). If someone was to be employed, have a good education, married, and have a high income, I also hypothesize that they will have a larger family (<= 6). I hypothesize that those who have a mix of these factors, will have a smaller family size (>= 5). It is often seen that those who are close to or below the poverty line, will have a larger to medium size family and will usually be working multiple jobs. On the other hand, is is seen that those who have a greater income and are employed, will be able to afford having larger family sizes and typically will have larger families. A good example of grouping these different types of people is through socioeconomic status such as lower class, middle class, and upper class. I am hypothesizing that those in the lower class and upper class will be affected by the factors by having larger families, and those in the middle class will be affected by having a smaller family. 
 
-If observe that there is a small percentage of obesity in those who have good nutrition but little to no physical activity, then my hypothesis would be supported. My hypothesis would also be supported if I observed that there is a greater percentage of obesity in those with bad nutrition but a lot of physical activity. On the other hand, if I observe that there is a greater percentage of obesity in those who have good nutrition but little to no physical activity, then this would provide evidence against my hypothesis. My hypothesis would also be null if I observed that there is a smaller percentage of obesity in those with bad nutrition but a lot of physical activity.
+The explanatory variables are employment status, level of education, marital status, and income level. Employment status can be measured and assessed as either employed or unemployed. Level of education is measured and assessed through lower education (e.g., high school diploma or below) and higher education (e.g., college degree or higher). Marital status is measured and assessed through either being married or unmarried. Finally, income level is measured and assessed through low(<70,000) and high(>=70,000) income. 
+
+The outcome variable being measured and assessed is family size, which is just seen as the number of individuals within a family unit. The hypothesis predicts that family size will be affected by the combination of the explanatory variables. The family size is categorized as smaller (>= 5) or larger (<= 6) based on the presence or absence of the specified factors.
+
+The observed pattern in the data that would support my hypothesis is if there is a consistent trend showing that individuals with no employment, lower education, unmarried status, and low income, would have larger families (<=5). Similarly, if those who have higher education, who are employed, married, and have higher incomes, have larger families as well (<=5). Finally, if it is observed that there is a trend that those who have a mix of these factors tend to have a smaller family size (>= 3). 
+
+The observed pattern in the data that would disprove my hypothesis would be if there is no consistent relationship between the specified factors of employment, education, marital status, and income, with family size. This could be seen with individuals who have higher educations and higher income levels having smaller families or if those with low income levels and low education having smaller families as well. Generalizing, the main pattern that would disprove my hypothesis is if there is no discernable difference in family sizes between the different socioeconomic classes. 
+
+
+
 Milestone 3:
-
-description: National Longitudinal Survey of Youth (1979 -- 2012) is a longitudinal project that follows a sample of American youth born between 1957-64 on various life aspects from 1979 to 2012. The data set provided below is a subset of this database, focusing on variables of 4 main topics: socioeconomic status, employment, education, and marriage. Some recommended statistical analysis techniques to be applied are multiple regression, time series analysis, logistic regression, and ANOVA.
 
 ```{r, `show_col_types = FALSE`}
 library(readr)
-library(ggplot2)
 library(tidyverse)
 library(dplyr)
 youth_dataset_long_form <- read_csv("~/Desktop/Final Project/youth-dataset-long-form.csv")
@@ -39,8 +45,12 @@ youth_dataset_long_form <- read_csv("~/Desktop/Final Project/youth-dataset-long-
 
 ```{r}
 library(ggplot2)
+library(infer)
 
-ggplot(youth_dataset_long_form, aes(x = FAMSIZE_, y = INCOME_, color = SAMPLE_RACE)) +
+youth_dataset_long_form |>
+  slice_sample(n = 10)
+
+ggplot(youth_dataset_long_form, aes(x = FAMSIZE_, y = INCOME_MAX, color = SAMPLE_RACE)) +
   geom_point() +
   geom_smooth(method = "lm", formula = y ~ x, se = FALSE, color = "black") +
   labs(
@@ -54,4 +64,43 @@ ggplot(youth_dataset_long_form, aes(x = FAMSIZE_, y = INCOME_, color = SAMPLE_RA
 ggplot
 ```
 
-Explanation for Visual: The visual above represents a scatterplot representing the relationship between income and family size, and the points are color coded to the race that each individual is. The regression line is here to show the relationship between the two variables to further predicte the value of the dependent variable for a given value of the independent variable. The results from the scatterplot show that first, most of the individuals within this dataset are below the \$200,000 income level. It also shows that while every race is spread throughout the amount of children each family has, black people and hispanic people tend to be the only ones who have more than 11 children within their family. It is also seen that there is a decline in income level in relation to the amount of children a family has. For every child born into a family, the income level will decrease.
+Explanation for Visual: The visual above represents a scatter plot representing the relationship between income and family size, and the points are color coded to the race that each individual is. The regression line is here to show the relationship between the two variables to further predict the value of the dependent variable for a given value of the independent variable. The results from the scatter plot show that first, most of the individuals within this data set are below the $200,000 income level. It also shows that while every race is spread throughout the amount of children each family has, black people and Hispanic people tend to be the only ones who have more than 11 children within their family. It is also seen that there is a decline in income level in relation to the amount of children a family has. For every child born into a family, the income level will decrease.
+
+
+
+
+
+Milestone 4:
+
+```{r}
+library(ggplot2)
+library(scales)
+library(gt)
+library(tidyverse)
+library(dplyr)
+
+plot_data <- youth_dataset_long_form
+
+table_summary <- plot_data |>
+  select(FAMSIZE_, INCOME_MAX, SAMPLE_RACE) |>
+  group_by(FAMSIZE_, SAMPLE_RACE) |>
+  summarise(avg_income = mean(INCOME_MAX, na.rm = TRUE)) |>
+  gt() |>
+  tab_header(
+    title = "Summary Table",
+    subtitle = "Average Income by Family Size and Race"
+  ) |>
+  fmt_number(
+    columns = vars(avg_income),
+    suffixing = TRUE,
+    decimals = 2
+  )
+
+table_summary
+```
+
+Above I created a table showing the relationship between family size, race, and average maximum income; this is grouped through family size. I researched online and found help on how to create this very interesting and cool looking table above! Coding can be so interesting and fun when creating tables and graphs. 
+
+This nicely formatted table showing the results of my graph, shows that there is indeed a correlation between average maximum income and family size as income begins to drop quickly once family sizes reach 6 and above. To compare, a black family of 5 will have an income of 40.16k while a black famil of 18 will have 5.00k. I also noticed a large difference between Black families, Hispanic families, and non-black, non-Hispanic families. To compare a black family of 3 will have an average maximum income of 43.10k, while a Hispanic family of 3 will have an average maximum income of 50.33k, and finally a non-black, non-Hispanic family of 3 will have an average maximum income of 53.50k. 
+
+
