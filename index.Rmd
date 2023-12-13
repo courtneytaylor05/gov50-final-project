@@ -79,13 +79,10 @@ From the table above, I decided to analyze if those who have at least one family
 Regression:
 ```{r}
 library(stargazer)
-install.packages("stargazer")
 
 fit_ate <- lm(INCOME_ ~ treatment + COUNTRY_OF_BIRTH + SAMPLE_RACE + SAMPLE_SEX + FAMSIZE_ + POVSTATUS_ + REGION_ + EDU_DEGREE + EMP_STATUS_, data = youth_dataset_long_form)
 
 summary(fit_ate)
-
-stargazer(fit.ate, data = text)
 ```
 Explanation: 
 
