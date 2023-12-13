@@ -102,36 +102,17 @@ library(ggplot2)
 
 set.seed(02138)
 
-income_hist <- ggplot(youth_dataset_long_form, aes(x = INCOME_)) +
-  geom_histogram(binwidth = 1000, color = "black", fill = "skyblue", alpha = 0.7) +
-  facet_wrap(~ FAMSIZE_, scales = "free") +
+income_hist <- ggplot(youth_dataset_long_form, aes(x = INCOME_, fill = as.factor(FAMSIZE_group))) +
+  geom_histogram(alpha = 0.7) +
   labs(title = "Income Distribution by Family Size",
        x = "Income",
-       y = "Frequency")
+       y = "Frequency") +
+  scale_x_log10(labels = scales::dollar_format())
 
 income_hist
 ```
 Explanation:
 
-
-income_hist <- youth_dataset_long_form |>
-  filter()
-  rep_slice_sample(n = , reps = ) |>
-  group_by(replicate) |>
-  summarize(
-    
-  )
-
-filter(age < 30) |>
-rep_slice_sample(n = 200, reps = 1000) |>
-group_by(replicate) |>
-summarize(
-turnout_prop = mean(vote_gen_2020)
-)
-young_turnout_prop_hist <- ggplot(young_samples_n200, aes(x = turnout_prop)) +
-geom_histogram(aes(y = after_stat(density)), binwidth = 0.01) +
-geom_vline(xintercept = mean(durham$vote_gen_2020), linewidth = 1.25, color = "red")
-young_turnout_prop_hist
 
 
 
@@ -144,14 +125,14 @@ young_turnout_prop_hist
 set.seed(02138)
 
 ate <- youth_dataset_long_form |>
-  specify(treatment ~ INCOME_) |>
-  calculate(stat = "diff in means", order = c("Treatment", "Control"))
+  specify(INCOME_ ~ treatment) |>
+  calculate(stat = "diff in means", order = c("Treated", "Control"))
 
 ate_null_dist <- youth_dataset_long_form |>
   specify(INCOME_ ~ treatment) |>
   hypothesize(null = "independence") |>
   generate(reps = 1000, type = "permute") |>
-  calculate(stat = "diff in means", order = c("Treatment", "Control"))
+  calculate(stat = "diff in means", order = c("Treated", "Control"))
 
 ate_p <- ate_null_dist |>
   get_p_value(obs_stat = ate, direction = "both")
@@ -162,32 +143,6 @@ ate_null_dist |>
 ```
 Explanation:
 
-
-
-
-
-ate_boots_alt <- youth_dataset_long_form |>
-rep_slice_sample(prop = 1, replace = TRUE, reps = 100) |>
-group_by(replicate, treatment) |>
-summarize(income = mean(INCOME_)) |>
-pivot_wider(names_from = treatment, values_from = income) |>
-mutate(ATE = `Treated` - `Control`) |>
-select(ATE)
-
-ate_ci_95 <- ate_boots_alt |>
-  select(replicate, ATE) |>
-  na.omit() |>
-get_confidence_interval(level = 0.95)
-
-
-ate_boots_alt |>
-ggplot(aes(x = ATE)) +
-geom_histogram(aes(y = after_stat(density)), binwidth = 1) +
-geom_vline(xintercept = unlist(ate_ci_95)) +
-labs(
-x = "Difference in means",
-title = "Bootstrap distribution and 95% confidence interval"
-)
 
 
 
@@ -218,7 +173,7 @@ means_by_family_size
 ```
 Explanation:
 
-In this table, I grouped together family sizes into three categories: 1-4 Family Size, 5-10 Family Size, and 11-15 Family Size. I then calculated the mean income for every level to see an average income for one person in a family between the sizes in each category. As we can see, those in a family size between 1 and 4, will have the most income with it being an average of $17,401.82. Those with the smallest amount of income will be those in the 5-10 family size group which goes against my initial theory of the more people in a family means the less income a person will have. Since the middle group of 5-10 has the lowest income, just from this table, I fail to reject my null hypothesis. 
+In this table, I grouped together family sizes into three categories: 1-4 Family Size, 5-10 Family Size, and 11-15 Family Size. I then calculated the mean income for every level to see an average income for one person in a family between the sizes in each category. As we can see, those in a family size between 1 and 4, will have the most income with it being an average of $17,401.82. Those with the smallest amount of income will be those in the 5-10 family size group which goes against my initial theory of the more people in a family means the less income a person will have. Since the middle group of 5-10 has the lowest income, this provides evidence toward me failing to reject my null hypothesis. 
 
 
 
@@ -250,7 +205,7 @@ ggplot
 ```
 
 
-Explanation for Visual: The visual above represents a scatter plot representing the relationship between income and family size, and the points are color coded to the race that each individual is. The regression line is here to show the relationship between the two variables to further predict the value of the dependent variable for a given value of the independent variable. The results from the scatter plot show that first, most of the individuals within this data set are below the $200,000 income level. It also shows that while every race is spread throughout the amount of children each family has, black people and Hispanic people tend to be the only ones who have more than 11 children within their family. It is also seen that there is a decline in income level in relation to the amount of children a family has. For every child born into a family, the income level will decrease.
+Explanation for Visual: The visual above represents a scatter plot representing the relationship between income and family size, and the points are color coded to the race that each individual is. The regression line is here to show the relationship between the two variables to further predict the value of the dependent variable for a given value of the independent variable. The results from the scatter plot show that first, most of the individuals within this data set are below the $200,000 income level. It also shows that while every race is spread throughout the amount of children each family has, black people and Hispanic people tend to be the only ones who have more than 11 children within their family. It is also seen that there is a decline in income level in relation to the amount of children a family has. For every child born into a family, the income level will decrease. There are also some points in the higher income level area between $200,000 and $350,000 but even these points tend to stick in the small amount of family members area, mainly staying between 1 and 7 family members. There are 8 outlying points closer to the 10 family member mark, but these can be taken with small value into the graph. From this graph it is clear that when adding family members, a person's income will decrease. This provides evidence for me to reject my null hypothesis. 
 
 
 
@@ -270,7 +225,7 @@ plot_data <- youth_dataset_long_form
 
 table_summary <- plot_data |>
   select(FAMSIZE_, INCOME_MAX, SAMPLE_RACE) |>
-  filter(FAMSIZE_ >= 1)
+  filter(FAMSIZE_ >= 1) |>
   group_by(FAMSIZE_, SAMPLE_RACE) |>
   summarise(avg_income = mean(INCOME_MAX, na.rm = TRUE)) |>
   gt() |>
@@ -287,15 +242,6 @@ table_summary <- plot_data |>
 table_summary
 ```
 
-Above I created a table showing the relationship between family size, race, and average maximum income; this is grouped through family size. This nicely formatted table showing the results of my graph, shows that there is indeed a correlation between average maximum income and family size as income begins to drop quickly once family sizes reach 6 and above. To compare, a black family of 5 will have an income of 40.16k while a black family of 18 will have 5.00k. I also noticed a large difference between Black families, Hispanic families, and non-black, non-Hispanic families. To compare a black family of 3 will have an average maximum income of 43.10k, while a Hispanic family of 3 will have an average maximum income of 50.33k, and finally a non-black, non-Hispanic family of 3 will have an average maximum income of 53.50k. 
-
-
-add in that this income is not of the whole family but of one single person ^^^^^
-
-
-
-
-
-
+Above I created a table showing the relationship between family size, race, and average maximum income; this is grouped through family size. This nicely formatted table showing the results of my graph, shows that there is indeed a correlation between average maximum income and family size as income begins to drop quickly once family sizes reach 6 and above. To compare, a black family of 5 will have a single person with an income of 40.16k while a black family of 18 will have a single person with an income of 5.00k. I also noticed a large difference between Black families, Hispanic families, and non-black, non-Hispanic families. To compare, a black family of 3 will have an average maximum income of 43.10k, while a Hispanic family of 3 will have an average maximum income of 50.33k, and finally a non-black, non-Hispanic family of 3 will have an average maximum income of 53.50k. While race plays no part in my hypothesis, it is an interesting confounder that could be in play when it comes to family size affecting income. From this nicely formatted table, evidence is provided that allows me to reject my null hypothesis. 
 
 
