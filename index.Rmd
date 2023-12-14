@@ -29,9 +29,6 @@ youth_dataset_long_form <- read_csv("~/Desktop/Final Project/youth-dataset-long-
 
 Data Section:
 
-add in your milestone 2 here
-
-
 Description of Dataset: National Longitudinal Survey of Youth (1979 -- 2012) is a longitudinal project that follows a sample of American youth born between 1957-64 on various life aspects from 1979 to 2012. The data set provided below is a subset of this database, focusing on variables of 4 main topics: socioeconomic status, employment, education, and marriage. 
 
 How does the variable family size affect income for a singular person? Does the number of people in a family affect income, or is there an average difference in income with any family size versus those who do not have family members? I plan to examine these questions and variables to find if there are any correlations or relationships to be understood. I am interested in exploring this data related to socioeconomic levels within the United States as I am wondering how children or family sizes could affect someones socioeconomic level or their income. This is interesting as our country was known for having a large middle class, but this has slowly deteriorated over time. Now, America is struggling to keep the middle class alive. I would like to analyze if family size plays a role in this by decreasing incomes of a single person within the particular family. While the description of dataset above says how the data comes from a longitudinal survey of youth as it follows the youth from 1979 to 2012, for my data, I am solely using the survey conducted in 2012 as the final survey. I am not analyzing how the participants changed over time in a before and after, rather I am conducting a cross-sectional study to see how in this one survey, in this one point in time, did the participants family size affect their income. To clarify, this study is taking data that has been measured through a survey of over 240,000 people, all within different socioeconomic groups, race, and gender. 
@@ -169,7 +166,7 @@ In conclusion, this regression shows that the treatment effect does have an impa
 
 
 
-P-Value Distribution To Fail To Reject Null Hypothesis:
+P-Value Distribution To Reject Null Hypothesis:
 
 ```{r}
 set.seed(02138)
